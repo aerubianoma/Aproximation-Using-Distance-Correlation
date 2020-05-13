@@ -21,6 +21,9 @@ class toy_model():
     def sen(self,n,noise):
         self.random_vector_x = np.array(sorted(np.random.uniform(-np.pi,np.pi,n)))
         self.random_vector_y = (np.sin(self.random_vector_x)+noise*np.random.uniform(-1,1,n))
+    def exp(self,n,noise):
+        self.random_vector_x = np.array(sorted(np.random.uniform(-1,1,n)));
+        self.random_vector_y = 15*np.exp(-20*(self.random_vector_x+0.5)**2)+8*np.exp(-400*self.random_vector_x**2)-5*np.exp(-50*(self.random_vector_x-0.5)**2);
     # Se grafica el polinomio y además la muestra que se obtiene
     def plot(self):
         plt.figure(0);

@@ -16,6 +16,8 @@ class Aproximation():
         self.new_x = [];
         self.critical_points = [];
         self.norm = [];
+        self.best_aproximation = 0;
+        self.aproximations = [];
     def scanner(self):
         i = 0;
         while i<(self.size-self.paso):
@@ -56,24 +58,36 @@ class Aproximation():
         def residuos(p, y, x):
             sum = 0.0;
             for i in range(len(x_0)):
-                sum += exp(p[i],p[-1],self.critical_points[i],x)
-            error = y - (sum)
+                sum += exp(p[i],p[-1],self.critical_points[i],x);
+            error = y - (sum);
             return error
-        p0 = initial_values
-        ajuste = leastsq(residuos, p0, args=(self.sample.y, self.sample.x))
+        p0 = initial_values;
+        ajuste = leastsq(residuos, p0, args=(self.sample.y, self.sample.x));
         def funcion(x, p):
-            sum = 0.0
+            sum = 0.0;
             for i in range(len(x_0)):
-                sum += exp(p[i],p[-1],self.critical_points[i],x)
+                sum += exp(p[i],p[-1],self.critical_points[i],x);
             return sum
-        x1 = self.sample.x
-        y1 = funcion(self.sample.x, ajuste[0])
-        plt.figure(4);
-        plt.plot(x1, y1, '-')
-        self.norm.append(np.linalg.norm(self.sample.y-y1))
-    def plot(self):
+        x1 = self.sample.x;
+        y1 = funcion(self.sample.x, ajuste[0]);
+        self.norm.append(np.linalg.norm(self.sample.y-y1));
+        self.aproximations.append(y1);
+    def chooseBestAproximation(self,initial_values,roots):
+        self.best_aproximation = 0;
+        p_0 = initial_values;
+        self.norm = [];
+        for i in range(1,roots):
+            self.number_of_roots = i;
+            self.choose_roots();
+            ajuste = self.leastSquares(p_0);
+            p_0.append(1);
+        self.best_aproximation = self.norm.index(min(self.norm));
+        x = self.sample.x
+        y = self.aproximations[self.best_aproximation]
         plt.figure(4);
         plt.plot(self.sample.x,self.sample.y, "ob");
+        plt.plot(x, y, 'r');
+        print(self.norm[self.best_aproximation]);
 #------------------------------------------------------------------------------------------------------
 """Partir el dominio y calcular el valor
 separacion = Distance_correlation();
