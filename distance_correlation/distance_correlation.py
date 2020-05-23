@@ -1,7 +1,6 @@
 from libraries import *
 class Distance_correlation():
     def __init__(self):
-        # Vectores aleatorios
         # Cuando se instancie el objeto, se deben cargar estos vectores usando la clase anterior
         self.x = np.array;
         self.y = np.array;
@@ -53,15 +52,23 @@ class Distance_correlation():
         self.B = np.zeros((n,n));
         for i in range(n):
             for j in range(n):
-                self.A[i][j] = self.matrix_distances_x[i][j]-self.row_average_x[i]-self.column_average_x[j][0]+self.total_average_x;
-                self.B[i][j] = self.matrix_distances_y[i][j]-self.row_average_y[i]-self.column_average_y[j][0]+self.total_average_y;
+                if i >= j:
+                    self.A[i][j] = self.matrix_distances_x[i][j]-self.row_average_x[i]-self.column_average_x[j][0]+self.total_average_x;
+                    self.A[j][i] = self.matrix_distances_x[j][i]-self.row_average_x[j]-self.column_average_x[i][0]+self.total_average_x;
+                    self.B[i][j] = self.matrix_distances_y[i][j]-self.row_average_y[i]-self.column_average_y[j][0]+self.total_average_y;
+                    self.B[j][i] = self.matrix_distances_y[j][i]-self.row_average_y[j]-self.column_average_y[i][0]+self.total_average_y;
     # Se calculan las distancia de covarianza 
     def calculateDistanceCovariance(self,n):
         for i in range(n):
             for j in range(n):
-                self.distance_covariance_x_y +=  (self.A[i][j])*(self.B[i][j]);
-                self.distance_covariance_x_x +=  self.A[i][j]**2;
-                self.distance_covariance_y_y +=  self.B[i][j]**2;
+                if i>j:
+                    self.distance_covariance_x_y +=  2*(self.A[i][j])*(self.B[i][j]);
+                    self.distance_covariance_x_x +=  2*self.A[i][j]**2;
+                    self.distance_covariance_y_y +=  2*self.B[i][j]**2;
+                if i == j:
+                    self.distance_covariance_x_y +=  (self.A[i][j])*(self.B[i][j]);
+                    self.distance_covariance_x_x +=  self.A[i][j]**2;
+                    self.distance_covariance_y_y +=  self.B[i][j]**2;
         self.distance_covariance_x_y = self.distance_covariance_x_y*(1/n**2);
         self.distance_covariance_x_x = self.distance_covariance_x_x*(1/n**2);
         self.distance_covariance_y_y = self.distance_covariance_y_y*(1/(n**2));
